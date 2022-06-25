@@ -7,29 +7,23 @@ from math import prod
 
 
 def count_find_num(primesl: list, limit: int) -> list:
-    valid_factors: list = []
-    all_factors: list = []
-    for index in range(2, limit+1):
-        factors: list = []
-        divisor: int = 2
-        while divisor <= index:
-            if index % divisor == 0:
-                factors.append(divisor)
-                index = index / divisor
-            else:
-                divisor += 1
-        all_factors.append(factors)
-
-    for factor in all_factors:
-        if set(primesl) == set(factor):
-            valid_factors.append(factor)
-
-    if valid_factors:
-        iterations = len(valid_factors)
-        max_number = max([prod(factor) for factor in valid_factors])
-        return [iterations, max_number]
-    else:
+    valid_factors: int = prod(primesl)
+    all_factors: set = set()
+    all_factors.add(valid_factors)
+    if valid_factors > limit:
         return []
+    old_values = {valid_factors}
+    while valid_factors <= limit:
+        new_values: set = set()
+        for index in old_values:
+            for i in primesl:
+                element: int = index * i
+                new_values.add(element)
+                if element <= limit:
+                    all_factors.add(element)
+        valid_factors = min(new_values)
+        old_values = {index for index in new_values if index < limit}
+    return [len(all_factors), max(all_factors)]
 
 
 if __name__ == "__main__":
