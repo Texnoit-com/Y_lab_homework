@@ -16,13 +16,11 @@ def repeater(call_count=1, start_sleep_time=0.5,
         def wrapper(*args, **kwargs):
             print(f'Кол-во запусков = {call_count}')
             print('Начало работы')
-            sleep_time = start_sleep_time
             for counter in range(call_count):
                 value = func(*args, **kwargs)
-                if sleep_time < border_sleep_time:
-                    sleep_time *= 2 ** factor
-                    if sleep_time >= border_sleep_time:
-                        sleep_time = border_sleep_time
+                sleep_time = start_sleep_time * factor ** counter
+                if sleep_time >= border_sleep_time:
+                    sleep_time = border_sleep_time
                 print(f'Запуск номер {counter+1}. Ожидание:'
                       f' {sleep_time} секунд. Результат '
                       f'декорируемой функций = {value}')
@@ -32,10 +30,10 @@ def repeater(call_count=1, start_sleep_time=0.5,
     return decorator
 
 
-@repeater(3, 1, 2, 5)
+@repeater(5, 2, 2, 20)
 def user_sqrt(number: int):
-    return number * number
+    return number * 2
 
 
 if __name__ == '__main__':
-    user_sqrt(2)
+    user_sqrt(3)
